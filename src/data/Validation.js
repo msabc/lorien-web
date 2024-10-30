@@ -13,9 +13,7 @@ export const validateInput = (
   }
 
   const isValidDate = Date.parse(departureDate);
-  console.log('isValidDate', isValidDate)
   if (isNaN(isValidDate)) {
-    console.error("invalid date format");
     return false;
   }
 

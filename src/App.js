@@ -6,26 +6,25 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { LorienRoutes } from "./data/enums/LorienRoutes";
+import { LorienRoutes } from "./data/constants/LorienRoutes";
 import AboutPage from "./pages/AboutPage";
 import PageNotFound from "./pages/PageNotFound";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/homepage/HomePage";
 import NavigationLayout from "./components/layouts/NavigationLayout";
 
 function App() {
   return (
-    <div className="App">
-      <NavigationLayout>
-        <BrowserRouter>
-          <Routes>
-            <Route path={LorienRoutes.Home} element={<HomePage />} />
-            <Route path={LorienRoutes.About} element={<AboutPage />} />
+    <NavigationLayout>
+      <BrowserRouter>
+        <Routes>
+          <Route path={LorienRoutes.Home} element={<HomePage />} />
+          <Route path={LorienRoutes.About} element={<AboutPage />} />
+          <Route path={LorienRoutes.About} element={<AboutPage />} />
 
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </NavigationLayout>
-    </div>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </NavigationLayout>
   );
 }
 

@@ -1,22 +1,15 @@
 import {
   Autocomplete,
   Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
-  Stack,
   TextField,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Grid from "@mui/material/Grid2";
 import React, { useEffect, useState } from "react";
-import {
-  getCurrencyCodes,
-  getIATACodes,
-} from "./services/FlightPricingService";
-import { LorienSettings } from "./settings/LorienSettings";
-import { validateInput } from "../data/Validation";
+import { LorienSettings } from "../../../settings/LorienSettings";
+import { validateInput } from "../../../data/Validation";
+import { getCurrencyCodes, getIATACodes } from "../../../services/FlightPricingService";
 
 export default function FlightFilters(props) {
   const { invokeSearch, invokeError } = props;
@@ -97,10 +90,13 @@ export default function FlightFilters(props) {
   }, [destinationCodeTextValue]);
 
   const handleOnDepartureCodeValueChange = (e) => {
+    console.log("dept value: ", e.target.value);
+
     setDepartureCodeTextValue(e.target.value);
   };
 
   const handleOnDestinationCodeValueChange = (e) => {
+    console.log("dest value: ", e.target.value);
     setDestinationCodeTextValue(e.target.value);
   };
 
@@ -139,94 +135,110 @@ export default function FlightFilters(props) {
       departureCode: departureCodeTextValue,
       destinationCode: destinationCodeTextValue,
       departureDate: departureDate,
-      numberOfPassengers: numberOfPassengers
+      numberOfPassengers: numberOfPassengers,
     });
   };
-
-  const handleOnDropdownChange = (e) => {
-    console.log(e.target.value);
+  const handleOnDepartureDropdownChange = (e) => {
+    console.log(e.target);
+    setDepartureCodeTextValue(e.target.textContent);
+  };
+  const handleOnDestinationDropdownChange = (e) => {
+    console.log(e.target);
+    setDestinationCodeTextValue(e.target.textContent);
   };
 
   return (
     <Paper elevation={3} sx={{ p: 2 }}>
-      <Stack direction="row" spacing={2}>
-        <Autocomplete
-          disablePortal
-          loading={isDepartureRequestLoading}
-          options={departureIATACodes}
-          sx={{ width: 150 }}
-          size="small"
-          variant="outlined"
-          onChange={handleOnDropdownChange}
-          getOptionLabel={(option) => option.iata}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              value={departureCodeTextValue}
-              onChange={handleOnDepartureCodeValueChange}
-              label="Departure"
-            />
-          )}
-        />
-        <Autocomplete
-          disablePortal
-          loading={isDestinationRequestLoading}
-          options={destinationIATACodes}
-          sx={{ width: 150 }}
-          size="small"
-          variant="outlined"
-          getOptionLabel={(option) => option.iata}
-          onChange={handleOnDropdownChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              value={destinationCodeTextValue}
-              onChange={handleOnDestinationCodeValueChange}
-              label="To"
-            />
-          )}
-        />
-        <TextField
-          label="Departure date"
-          variant="outlined"
-          size="small"
-          placeholder="Departure date"
-          type="date"
-          value={departureDate}
-          onChange={handleOnDepartureDateValueChange}
-        />
-        <TextField
-          label="No. of passengers"
-          variant="outlined"
-          size="small"
-          type="number"
-          value={numberOfPassengers}
-          onChange={handleOnNumberOfPassengersTextValueChange}
-        />
-        <FormControl>
-          <InputLabel id="currencies-input-label">Currency</InputLabel>
-          <Select
+      <Grid container gap={1}>
+        <Grid size={2}>
+          <Autocomplete
+            disablePortal
+            loading={isDepartureRequestLoading}
+            options={departureIATACodes}
+            onChange={handleOnDepartureDropdownChange}
             size="small"
-            value={currencyCodeValue}
-            label="Currency"
-            sx={{ width: 150 }}
+            variant="outlined"
+            getOptionLabel={(option) => option.iata}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                value={departureCodeTextValue}
+                onChange={handleOnDepartureCodeValueChange}
+                label="Departure"
+              />
+            )}
+          />
+        </Grid>
+        <Grid size={2}>
+          <Autocomplete
+            disablePortal
+            loading={isDestinationRequestLoading}
+            options={destinationIATACodes}
+            onChange={handleOnDestinationDropdownChange}
+            size="small"
+            variant="outlined"
+            getOptionLabel={(option) => option.iata}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                value={destinationCodeTextValue}
+                onChange={handleOnDestinationCodeValueChange}
+                label="Destination"
+              />
+            )}
+          />
+        </Grid>
+        <Grid size={2}>
+          <TextField
+            label="Departure date"
+            variant="outlined"
+            size="small"
+            placeholder="Departure date"
+            type="date"
+            value={departureDate}
+            onChange={handleOnDepartureDateValueChange}
+          />
+        </Grid>
+        <Grid size={2}>
+          <TextField
+            label="No. of passengers"
+            variant="outlined"
+            size="small"
+            type="number"
+            value={numberOfPassengers}
+            onChange={handleOnNumberOfPassengersTextValueChange}
+          />
+        </Grid>
+        <Grid size={1.5}>
+          <Autocomplete
+            disablePortal
+            loading={isCurrencyRequestLoading}
+            options={currencies}
             onChange={handleOnCurrencyCodeValueChange}
+            size="small"
+            variant="outlined"
+            getOptionLabel={(option) => option.alphabeticcode}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                value={currencyCodeValue}
+                onChange={handleOnCurrencyCodeValueChange}
+                label="Currency"
+              />
+            )}
+          />
+        </Grid>
+        <Grid size={1.5}>
+          <Button
+            fullWidth
+            variant="contained"
+            endIcon={<SearchIcon />}
+            onClick={handleOnSearchButtonClick}
           >
-            {Array.isArray(currencies) &&
-              currencies.length > 0 &&
-              currencies.map((x) => (
-                <MenuItem value={x.currency}>{x.alphabeticcode}</MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <Button
-          variant="contained"
-          endIcon={<SearchIcon />}
-          onClick={handleOnSearchButtonClick}
-        >
-          Search
-        </Button>
-      </Stack>
+            Search
+          </Button>
+        </Grid>
+      </Grid>
     </Paper>
   );
 }

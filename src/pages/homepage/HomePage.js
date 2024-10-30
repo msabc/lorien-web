@@ -1,15 +1,15 @@
-import { Alert, Snackbar, Stack } from "@mui/material";
-import FlightFilters from "../components/FlightFilters";
-import FlightOffers from "../components/FlightOffers";
-import { getFlightPrices } from "../components/services/FlightPricingService";
+import { Alert, Snackbar, Stack, Typography } from "@mui/material";
+import FlightFilters from "./components/FlightFilters";
+import FlightOffers from "./components/FlightOffers";
 import { useState } from "react";
+import { getFlightPrices } from "../../services/FlightPricingService";
 
 export default function HomePage() {
   const [isRequestLoading, setIsRequestLoading] = useState(false);
   const [offers, setOffers] = useState([]);
   const [isErrorNotificationOpen, setIsErrorNotificationOpen] = useState(false);
   const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
-  
+
   const handleError = (errorMessage) => {
     setErrorNotificationMessage(errorMessage);
     setIsErrorNotificationOpen(true);
@@ -37,8 +37,10 @@ export default function HomePage() {
         const parsedResponse = JSON.parse(response);
         setOffers(parsedResponse.flightOffers);
       })
-      .catch((error) => {
-        setErrorNotificationMessage("An unexpected error occurred. Please try again later.");
+      .catch(() => {
+        setErrorNotificationMessage(
+          "An unexpected error occurred. Please try again later."
+        );
         setIsErrorNotificationOpen(true);
       })
       .finally(() => {
@@ -46,10 +48,32 @@ export default function HomePage() {
       });
   };
 
+  const renderFlightOffers = () => {
+    if (offers && offers.length > 0) {
+      return (
+        <FlightOffers isRequestLoading={isRequestLoading} offers={offers} />
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   return (
     <Stack spacing={5}>
-      <FlightFilters invokeSearch={handleSearch} invokeError={handleError}/>
-      <FlightOffers isRequestLoading={isRequestLoading} offers={offers} />
+      <Stack spacing={2}>
+        <Typography variant="h3" fontWeight="bold">
+          Lorien
+        </Typography>
+        <Typography variant="body1">
+          Lorien helps you search for cheap flights around the 🌍.
+        </Typography>
+        <Typography variant="body1">
+          Use the filters to find a flight. Click <b>Search</b> to get started.
+        </Typography>
+      </Stack>
+
+      <FlightFilters invokeSearch={handleSearch} invokeError={handleError} />
+      {renderFlightOffers()}
       <Snackbar
         open={isErrorNotificationOpen}
         autoHideDuration={6000}

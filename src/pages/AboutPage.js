@@ -5,11 +5,11 @@ import * as React from 'react';
 export default function AboutPage() {
     return (
         <Container>
-            <Typography align="center" variant="h2" gutterBottom>
-                About
+            <Typography variant="h2" gutterBottom>
+                About Lorien
             </Typography>
-            <Typography align="center" variant="h5" gutterBottom>
-                wowzerinjo
+            <Typography>
+                Lorien is a React application used for a company challenge.
             </Typography>
         </Container>
     )

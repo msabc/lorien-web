@@ -1,4 +1,4 @@
-import { LorienUrls } from "../../data/enums/LorienUrls";
+import { LorienUrls } from "../data/constants/LorienUrls";
 
 const getFlightPricesPath =
   LorienUrls.Base + LorienUrls.FlightPricing.GetFlightPrices;

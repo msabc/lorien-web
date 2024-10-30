@@ -4,17 +4,16 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-import { LorienRoutes } from "../../data/enums/LorienRoutes";
 
 export default function NavigationLayout({ children }) {
-  const pages = Object.keys(LorienRoutes);
-  const links = Object.values(LorienRoutes);
+  const pages = ['home', 'about']
+  const links = ['/home','/about'];
 
   return (
     <>
       <div>
         <AppBar position="static">
-          <Container maxWidth="xl">
+          <Container maxWidth="l">
             <Toolbar disableGutters>
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 {pages.map((page, index) => (
