@@ -1,13 +1,12 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { Box, Button, Chip, Paper, Typography } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import { useMemo } from "react";
-import Loading from "../../../components/Loading";
 import { CheckCircle, ChevronRight, RemoveCircle } from "@mui/icons-material";
 import { Link, useLocation } from "react-router-dom";
 import { LorienRoutes } from "../../../data/constants/LorienRoutes";
 
 export default function FlightOffers(props) {
-  const { isRequestLoading, offers } = props;
+  const { offers, requestedData } = props;
   const location = useLocation();
 
   const columns = useMemo(
@@ -34,9 +33,25 @@ export default function FlightOffers(props) {
         align: "center",
       },
       {
+        field: "itineraries",
+        headerName: "No. of Itineraries",
+        renderCell: (params) => {
+          if (params.row.itineraries) {
+            return (
+              <Chip color="primary" label={params.row.itineraries.length} />
+            );
+          } else {
+            return <Typography>/</Typography>;
+          }
+        },
+        width: 250,
+        headerAlign: "center",
+        align: "center",
+      },
+      {
         field: "numberOfBookableSeats",
         headerName: "No. of Bookable Seats",
-        width: 150,
+        width: 250,
         headerAlign: "center",
         align: "center",
       },
@@ -59,8 +74,9 @@ export default function FlightOffers(props) {
         getActions: (params) => [
           <Link
             className="unstyled-link"
-            to={LorienRoutes.Itinerary}
+            to={LorienRoutes.ItineraryDetails}
             state={{
+              request: requestedData,
               data: params.row,
               prevPath: location.pathname,
             }}
@@ -68,32 +84,25 @@ export default function FlightOffers(props) {
             <Button variant="outlined" endIcon={<ChevronRight />}>
               Details
             </Button>
-          </Link>
+          </Link>,
         ],
       },
     ],
-    [location.pathname]
+    [requestedData, location.pathname]
   );
 
   return (
-    <Paper sx={{ height: 400, width: "100%" }}>
-      {isRequestLoading === true ? (
-        <Loading />
-      ) : (
-        <Box sx={{ height: 400, width: "100%" }}>
-          <div style={{ display: "flex" }}>
-            <div style={{ flexGrow: 1 }}>
-              <DataGrid
-                disableSelectionOnClick
-                rows={offers}
-                columns={columns}
-                getRowId={(row) => row.id}
-                hideFooter
-              />
-            </div>
-          </div>
-        </Box>
-      )}
+    <Paper sx={{ height: 450, width: "100%" }}>
+      <Box sx={{ minHeight: 450, width: "100%" }}>
+        <DataGrid
+          sx={{ maxHeight: 450 }}
+          disableRowSelectionOnClick
+          rows={offers}
+          columns={columns}
+          getRowId={(row) => row.id}
+          hideFooter
+        />
+      </Box>
     </Paper>
   );
 }

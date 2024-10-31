@@ -1,5 +1,5 @@
 export const LorienRoutes = {
     Home: "/",
-    Itinerary: "/itinerary",
+    ItineraryDetails: "/itinerary-details",
     About: "/about"
 }

@@ -11,6 +11,7 @@ import AboutPage from "./pages/AboutPage";
 import PageNotFound from "./pages/PageNotFound";
 import HomePage from "./pages/homepage/HomePage";
 import NavigationLayout from "./components/layouts/NavigationLayout";
+import ItineraryDetailsPage from "./pages/ItineraryDetailsPage";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <Routes>
           <Route path={LorienRoutes.Home} element={<HomePage />} />
           <Route path={LorienRoutes.About} element={<AboutPage />} />
-          <Route path={LorienRoutes.About} element={<AboutPage />} />
+          <Route path={LorienRoutes.ItineraryDetails} element={<ItineraryDetailsPage />} />
 
           <Route path="*" element={<PageNotFound />} />
         </Routes>

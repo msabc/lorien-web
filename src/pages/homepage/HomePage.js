@@ -3,10 +3,12 @@ import FlightFilters from "./components/FlightFilters";
 import FlightOffers from "./components/FlightOffers";
 import { useState } from "react";
 import { getFlightPrices } from "../../services/FlightPricingService";
+import Loading from "../../components/Loading";
 
 export default function HomePage() {
   const [isRequestLoading, setIsRequestLoading] = useState(false);
   const [offers, setOffers] = useState([]);
+  const [requestedData, setRequestedData] = useState({});
   const [isErrorNotificationOpen, setIsErrorNotificationOpen] = useState(false);
   const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
 
@@ -25,6 +27,13 @@ export default function HomePage() {
     departureDate,
     numberOfPassengers,
   }) => {
+    setRequestedData({
+      departureCode: departureCode,
+      destinationCode: destinationCode,
+      departureDate: departureDate,
+      numberOfPassengers: numberOfPassengers,
+    });
+
     setIsRequestLoading(true);
 
     getFlightPrices(
@@ -49,10 +58,12 @@ export default function HomePage() {
   };
 
   const renderFlightOffers = () => {
+    if (isRequestLoading) {
+      return <Loading />;
+    }
+
     if (offers && offers.length > 0) {
-      return (
-        <FlightOffers isRequestLoading={isRequestLoading} offers={offers} />
-      );
+      return <FlightOffers offers={offers} requestedData={requestedData} />;
     } else {
       return <></>;
     }
@@ -72,8 +83,14 @@ export default function HomePage() {
         </Typography>
       </Stack>
 
-      <FlightFilters invokeSearch={handleSearch} invokeError={handleError} />
+      <FlightFilters
+        invokeSearch={handleSearch}
+        invokeError={handleError}
+        request={requestedData}
+      />
+
       {renderFlightOffers()}
+
       <Snackbar
         open={isErrorNotificationOpen}
         autoHideDuration={6000}

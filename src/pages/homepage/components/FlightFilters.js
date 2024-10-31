@@ -10,6 +10,9 @@ import React, { useEffect, useState } from "react";
 import { LorienSettings } from "../../../settings/LorienSettings";
 import { validateInput } from "../../../data/Validation";
 import { getCurrencyCodes, getIATACodes } from "../../../services/FlightPricingService";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from "dayjs";
 
 export default function FlightFilters(props) {
   const { invokeSearch, invokeError } = props;
@@ -32,6 +35,7 @@ export default function FlightFilters(props) {
   const [departureDate, setDepartureDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [returnDate, setReturnDate] = useState(dayjs());
 
   useEffect(() => {
     getCurrencyCodes()
@@ -90,18 +94,21 @@ export default function FlightFilters(props) {
   }, [destinationCodeTextValue]);
 
   const handleOnDepartureCodeValueChange = (e) => {
-    console.log("dept value: ", e.target.value);
-
     setDepartureCodeTextValue(e.target.value);
   };
 
   const handleOnDestinationCodeValueChange = (e) => {
-    console.log("dest value: ", e.target.value);
     setDestinationCodeTextValue(e.target.value);
   };
 
   const handleOnDepartureDateValueChange = (e) => {
-    setDepartureDate(new Date(e.target.value).toISOString().split("T")[0]);
+    const value = e.target.value;
+
+    if (value === '') {
+      setDepartureDate('');
+    } else {
+      setDepartureDate(new Date(e.target.value).toISOString().split("T")[0]);
+    }
   };
 
   const handleOnNumberOfPassengersTextValueChange = (e) => {
@@ -139,11 +146,9 @@ export default function FlightFilters(props) {
     });
   };
   const handleOnDepartureDropdownChange = (e) => {
-    console.log(e.target);
     setDepartureCodeTextValue(e.target.textContent);
   };
   const handleOnDestinationDropdownChange = (e) => {
-    console.log(e.target);
     setDestinationCodeTextValue(e.target.textContent);
   };
 
@@ -209,7 +214,7 @@ export default function FlightFilters(props) {
             onChange={handleOnNumberOfPassengersTextValueChange}
           />
         </Grid>
-        <Grid size={1.5}>
+        <Grid size={2}>
           <Autocomplete
             disablePortal
             loading={isCurrencyRequestLoading}
@@ -228,7 +233,17 @@ export default function FlightFilters(props) {
             )}
           />
         </Grid>
-        <Grid size={1.5}>
+        <Grid size={2}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={returnDate}
+              label="Return date"
+              slotProps={{ field: { clearable: true }, textField: { size: 'small' } }}
+              onChange={(newValue) => setReturnDate(newValue)}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid size={2}>
           <Button
             fullWidth
             variant="contained"
